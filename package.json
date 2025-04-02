@@ -1,0 +1,30 @@
+{
+  "name": "regex-to-dfa",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "type": "module",
+  "license": "ISC",
+  "packageManager": "pnpm@10.7.1",
+  "scripts": {
+    "start": "node --loader esm-module-alias/loader --no-warnings .",
+    "dev": "nodemon --loader esm-module-alias/loader --no-warnings .",
+    "lint": "pnpx eslint .",
+    "lint:fix": "pnpx eslint . --fix"
+  },
+  "aliases": {
+    "@utils": "src/utils/index.js",
+    "@modules": "src/utils/module.js",
+    "@algorithm": "src/algorithm/index.js"
+  },
+  "dependencies": {
+    "esm-module-alias": "^2.2.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@stylistic/eslint-plugin-js": "^4.2.0",
+    "eslint": "^9.23.0",
+    "eslint-plugin-security": "^3.0.1",
+    "globals": "^16.0.0",
+    "nodemon": "^3.1.9"
+  }
+}
