@@ -3,69 +3,48 @@ import utils from '@utils';
 const { union } = utils.array;
 
 export default ({ start, end, leaf_map }) => {
+    let idx = 1;
+    const result = [];
     const edge_list = [];
     const list_to_idx = {};
-    const idx_to_list = {};
-    let idx = 1;
 
-    const create_edges = (node) => {
-        const ans = {};
-        for (const idx of node) {
+    const create_edges = (node) =>
+        node.reduce((acc, idx) => {
             const { ch, followpos } = leaf_map[idx];
-            if (ch === '#') {
-                continue;
-            }
-            if (!(ch in ans)) {
-                ans[ch] = [];
-            }
-            ans[ch] = union(ans[ch], followpos);
-        }
-        return ans;
-    };
+            if (ch === '#') { return acc };
+            return { ...acc, [ch]: union(acc[ch] || [], followpos) };
+        }, {});
 
     const dfs = (node) => {
-        list_to_idx[node] = idx;
-        idx_to_list[idx] = node;
-        idx++;
+        if (node in list_to_idx) { return; }
 
-        const edges = create_edges(node);
-        for (const ch in edges) {
-            const to = edges[ch];
-            if (!(to in list_to_idx)) {
+        list_to_idx[node] = idx++;
+        Object
+            .entries(create_edges(node))
+            .forEach(([ch, to]) => {
                 dfs(to);
-            }
-            edge_list.push({ from: list_to_idx[node], to: list_to_idx[to], ch });
-        }
+                edge_list.push({ from: list_to_idx[node], to: list_to_idx[to], ch });
+            });
     };
 
-    const get_final_states = () => {
-        const ans = [];
-        for (const list in list_to_idx) {
-            const idx = list_to_idx[list];
-            if (list.includes(end)) {
-                ans.push(idx);
-            }
-        }
-        return ans;
-    }
+    const final_states = () => Object
+        .entries(list_to_idx)
+        .filter(([list]) => list.includes(end))
+        .map(([, idx]) => idx);
 
     dfs(start);
 
-    let ans = '';
-    ans = `${ans}States:\n`;
+    result.push('States:\n');
+    Object
+        .entries(list_to_idx)
+        .sort(([, idx1], [, idx2]) => idx1 - idx2)
+        .forEach(([list, idx]) => {
+            result.push(`${idx} -> (${list})\n`);
+        });
+    result.push(`Initial state: ${list_to_idx[start]}\n`);
+    result.push(`Final states: ${final_states()}\n`);
+    result.push('Edges:\n');
+    edge_list.forEach(({ from, to, ch }) => result.push(`${from} ${to} ${ch}\n`));
 
-    for (const idx in idx_to_list) {
-        ans = `${ans}${idx} -> (${idx_to_list[idx]})\n`;
-    }
-
-    ans = `${ans}Initial state: ${list_to_idx[start]}\n`;
-    ans = `${ans}Final states: ${get_final_states()}\n`;
-
-    ans = `${ans}Edges:\n`;
-    for (const edge of edge_list) {
-        const { from, to, ch } = edge;
-        ans = `${ans}${from} ${to} ${ch}\n`;
-    }
-
-    return ans;
+    return result.join('');
 };

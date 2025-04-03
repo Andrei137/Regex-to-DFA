@@ -8,20 +8,21 @@ export default (alphabet) => (postfix) => {
     let leaf_idx = 1;
 
     const update_followpos = (node1, node2) => {
-        for (const i of node1.lastpos) {
+        node1.lastpos.forEach(i => {
             leaf_map[i].followpos = union(leaf_map[i].followpos, node2.firstpos);
-        }
+        });
     }
 
     for (const ch of postfix) {
         if (`${alphabet}λ#`.includes(ch)) {
-            const nullable = (ch === 'λ');
-            const pos = nullable
-                ? []
-                : [leaf_idx];
+            const nullable = ch === 'λ';
+            const pos = nullable ? [] : [leaf_idx];
+
             ast_stack.push({ ch, nullable, firstpos: pos, lastpos: pos, followpos: [] });
-            leaf_map[leaf_idx] = { ch, followpos: ast_stack.top().followpos };
-            leaf_idx += !nullable;
+
+            if (!nullable) {
+                leaf_map[leaf_idx++] = { ch, followpos: [] };
+            }
         }
         else if (ch === '*') {
             const left = ast_stack.pop();
@@ -58,8 +59,8 @@ export default (alphabet) => (postfix) => {
     }
 
     return {
-        'start': root.firstpos,
-        'end'  : root.lastpos[0],
+        start: root.firstpos,
+        end: root.lastpos[0],
         leaf_map,
     };
 };
