@@ -18,4 +18,6 @@ export default class {
     size = () => this.items.length;
 
     empty = () => this.items.length === 0;
+
+    to_string = () => this.items.reduce((acc, item) => `${acc}${item}`, '');
 };

@@ -6,9 +6,12 @@
   "license": "ISC",
   "packageManager": "pnpm@10.7.1",
   "scripts": {
-    "start": "node --loader esm-module-alias/loader --no-warnings .",
-    "dev": "nodemon --loader esm-module-alias/loader --no-warnings .",
-    "lint": "pnpx eslint .",
+    "deps"    : "pnpm i",
+    "clean"   : "rmdir /s /q node_modules && del pnpm-lock.yaml",
+    "restore" : "pnpm clean && pnpm deps",
+    "run:app" : "node --loader esm-module-alias/loader --no-warnings .",
+    "run:dev" : "pnpx nodemon --loader esm-module-alias/loader --no-warnings .",
+    "lint"    : "pnpx eslint .",
     "lint:fix": "pnpx eslint . --fix"
   },
   "aliases": {
@@ -24,7 +27,6 @@
     "@stylistic/eslint-plugin-js": "^4.2.0",
     "eslint": "^9.23.0",
     "eslint-plugin-security": "^3.0.1",
-    "globals": "^16.0.0",
-    "nodemon": "^3.1.9"
+    "globals": "^16.0.0"
   }
 }
