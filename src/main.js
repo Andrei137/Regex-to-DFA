@@ -15,7 +15,7 @@ const main = async () => {
         await utils.io.write(`bin/dfa/${file_name}.txt`, dfa);
     };
 
-    await utils.io.assure_existance('bin/regex');
+    await utils.io.assure_existence('bin/regex');
     const file_names = process.argv.length >= 3
         ? process.argv.slice(2)
         : await utils.io.list_files('bin/regex');

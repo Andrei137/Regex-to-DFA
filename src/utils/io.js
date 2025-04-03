@@ -34,7 +34,7 @@ const list_files = async (folder_path) => {
     }
 };
 
-const assure_existance = async (folder_path) => {
+const assure_existence = async (folder_path) => {
     try {
         await fs.access(folder_path);
     }
@@ -47,7 +47,7 @@ const assure_existance = async (folder_path) => {
 const create_dir = async (dir_path) => {
     try {
         await fs.mkdir(dir_path, { recursive: true });
-        await assure_existance(dir_path);
+        await assure_existence(dir_path);
     }
     catch (error) {
         console.error(`Error creating directory: ${dir_path}`);
@@ -59,6 +59,6 @@ export default {
     read,
     write,
     list_files,
-    assure_existance,
+    assure_existence,
     create_dir,
 };

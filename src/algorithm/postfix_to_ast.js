@@ -1,17 +1,5 @@
 import utils from '@utils';
 
-class ASTNode {
-    constructor(key, left, right, nullable, firstpos, lastpos, followpos=[]) {
-        this.key = key;
-        this.left = left;
-        this.right = right;
-        this.nullable = nullable;
-        this.firstpos = firstpos;
-        this.lastpos = lastpos;
-        this.followpos = followpos;
-    }
-}
-
 export default (alphabet) => (postfix) => {
     const ast_stack = new utils.stack();
     const leaf_map = {};
@@ -23,21 +11,21 @@ export default (alphabet) => (postfix) => {
             leaf_map[i].followpos = union(leaf_map[i].followpos, node2.firstpos);
         }
     }
-    
+
     for (const ch of postfix) {
         if (`${alphabet}λ#`.includes(ch)) {
             const nullable = (ch === 'λ');
             const pos = nullable
-                ? [] 
+                ? []
                 : [leaf_idx];
-            ast_stack.push(new ASTNode(ch, null, null, nullable, pos, pos));
+            ast_stack.push({ ch, nullable, firstpos: pos, lastpos: pos, followpos: [] });
             leaf_map[leaf_idx] = ast_stack.top();
             leaf_idx += !nullable;
         }
         else if (ch === '*') {
             const left = ast_stack.pop();
             update_followpos(left, left);
-            ast_stack.push(new ASTNode(ch, left, null, true, left.firstpos, left.lastpos));
+            ast_stack.push({ ...left, ch, left, nullable: true });
         }
         else {
             const right = ast_stack.pop();
@@ -59,14 +47,13 @@ export default (alphabet) => (postfix) => {
                     : right.lastpos;
                 update_followpos(left, right);
             }
-            ast_stack.push(new ASTNode(ch, left, right, nullable, firstpos, lastpos));
+            ast_stack.push({ ch, left, right, nullable, firstpos, lastpos });
         }
     }
 
     const root = ast_stack.pop();
-
     if (!ast_stack.empty()) {
-        throw new Error("Error in creating the AST.");
+        throw new Error('Error in creating the AST!');
     }
 
     return {
