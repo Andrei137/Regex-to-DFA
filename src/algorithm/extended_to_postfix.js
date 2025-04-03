@@ -3,7 +3,7 @@ import utils from '@utils';
 export default (alphabet) => (infix) => {
     const op_stack = new utils.stack();
     const out_queue = new utils.queue();
-    const precedence = ['|', '.', '*', ')'];
+    const precedence = Object.fromEntries(['|', '.', '*', ')'].map((op, i) => [op, i]));
 
     for (const ch of infix) {
         if (`${alphabet}λ#`.includes(ch)) {
@@ -25,7 +25,7 @@ export default (alphabet) => (infix) => {
             while (
                 !op_stack.empty() &&
                 '*|.)'.includes(op_stack.top()) &&
-                precedence.indexOf(op_stack.top()) >= precedence.indexOf(ch)
+                precedence[op_stack.top()] >= precedence[ch]
             ) {
                 out_queue.enqueue(op_stack.pop());
             }
