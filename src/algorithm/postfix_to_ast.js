@@ -1,11 +1,12 @@
 import utils from '@utils';
 
+const { union } = utils.array;
+
 export default (alphabet) => (postfix) => {
     const ast_stack = new utils.stack();
     const leaf_map = {};
     let leaf_idx = 1;
 
-    const union = (arr1, arr2) => Array.from(new Set([...arr1, ...arr2]));
     const update_followpos = (node1, node2) => {
         for (const i of node1.lastpos) {
             leaf_map[i].followpos = union(leaf_map[i].followpos, node2.firstpos);
@@ -19,7 +20,7 @@ export default (alphabet) => (postfix) => {
                 ? []
                 : [leaf_idx];
             ast_stack.push({ ch, nullable, firstpos: pos, lastpos: pos, followpos: [] });
-            leaf_map[leaf_idx] = ast_stack.top();
+            leaf_map[leaf_idx] = { ch, followpos: ast_stack.top().followpos };
             leaf_idx += !nullable;
         }
         else if (ch === '*') {

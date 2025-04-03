@@ -1,2 +1,2 @@
-ab
-a.(a|b)*.b
+abc
+(ab|bc)*(c|λ)b*
