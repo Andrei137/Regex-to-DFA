@@ -8,7 +8,7 @@ const main = async () => {
             .map(algorithm.infix_to_extended(alphabet))
             .map(algorithm.extended_to_postfix(alphabet));
         const [dfa] = [postfix]
-            .map(algorithm.postfix_to_ast)
+            .map(algorithm.postfix_to_ast(alphabet))
             .map(algorithm.ast_to_dfa);
 
         await utils.io.write(`bin/postfix/${file_name}.txt`, postfix);
